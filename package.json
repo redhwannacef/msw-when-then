@@ -6,6 +6,21 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "homepage": "https://github.com/redhwannacef/msw-when-then",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/redhwannacef/msw-when-then"
+  },
   "author": "Redhwan Nacef",
-  "license": "MIT"
+  "license": "MIT",
+  "keywords": [
+    "api",
+    "mock",
+    "mocking",
+    "worker",
+    "prototype",
+    "server",
+    "service",
+    "handler"
+  ]
 }

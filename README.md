@@ -13,6 +13,8 @@ msw-when-then aims to help with that.
 
 ## Usage
 
+### Basic Example
+
 ```js
 //...
 
@@ -39,6 +41,23 @@ test("displays error when fetch fails", async () => {
   const { findByText } = render(<DisplayMessage url="https://someurl" />);
 
   expect(await findByText("error")).toBeInTheDocument();
+});
+
+//...
+
+```
+
+### Custom Resolver
+
+```js
+//...
+
+test("displays message for given url", async () => {
+  when(get("https://someurl")).then((req, res, ctx) => res(ctx.status(200)));
+
+  const { findByText } = render(<DisplayMessage url="https://someurl" />);
+
+  expect(await findByText("success")).toBeInTheDocument();
 });
 
 //...

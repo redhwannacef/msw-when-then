@@ -7,7 +7,9 @@
     "test": "jest --watchAll"
   },
   "devDependencies": {
-    "jest": "^26.1.0"
+    "jest": "^26.1.0",
+    "msw": "^0.19.5",
+    "node-fetch": "^2.6.0"
   },
   "peerDependencies": {
     "msw": "0.x"

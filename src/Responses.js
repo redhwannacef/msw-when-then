@@ -1,4 +1,4 @@
-const response = (status, body) => ({ status, body });
+const response = (status, body = null) => ({ status, body });
 
 const ok = (body = null) => response(200, body);
 const created = (body = null) => response(201, body);

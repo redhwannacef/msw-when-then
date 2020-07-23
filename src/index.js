@@ -16,16 +16,7 @@ const _delete = (url) => mask("delete", url);
 const patch = (url) => mask("patch", url);
 const options = (url) => mask("options", url);
 
-const restMethods = (rest) => ({
-  get: rest.get,
-  post: rest.post,
-  put: rest.put,
-  delete: rest.delete,
-  patch: rest.patch,
-  options: rest.options,
-});
-
-const restMethod = (method, rest) => restMethods(rest)[method];
+const restMethod = (method, rest) => rest[method];
 
 const whenThen = (server, rest) => {
   const when = ({ method, url }) => ({

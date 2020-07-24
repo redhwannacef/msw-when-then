@@ -30,6 +30,6 @@ test("calls msw with then", () => {
   const { when } = whenThen(mockServer, mockRest);
   when(get("some url")).then(someFunction);
 
-  expect(mockRest.get).toBeCalledWith("some url", someFunction);
+  expect(mockRest.get).toBeCalledWith("some url", expect.any(Function));
   expect(mockServer.use).toBeCalledWith("called");
 });

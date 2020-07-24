@@ -30,5 +30,8 @@
     "server",
     "service",
     "handler"
-  ]
+  ],
+  "prettier": {
+    "printWidth": 100
+  }
 }

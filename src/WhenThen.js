@@ -3,8 +3,12 @@ const whenThen = (server, rest) => {
     let count = 0;
     let resolvers = [];
 
-    const thenReturn = ({ status, body = null }) => {
-      const resolver = (req, res, context) => res(context.status(status), context.json(body));
+    const thenReturn = ({ status, body = null }, { withRequest = null } = {}) => {
+      const resolver = (req, res, context) => {
+        if (typeof withRequest === "function")
+          withRequest({ body: req.body, headers: req.headers, params: req.params });
+        return res(context.status(status), context.json(body));
+      };
       resolvers.push(resolver);
       return { thenReturn, then };
     };

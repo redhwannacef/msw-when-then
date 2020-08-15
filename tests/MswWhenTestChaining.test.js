@@ -1,6 +1,6 @@
 const { rest } = require("msw");
 const { setupServer } = require("msw/node");
-const { whenThen, get, ok, badRequest } = require("../src");
+const { whenThen, get, post, ok, badRequest } = require("../src");
 const fetch = require("node-fetch");
 
 const server = setupServer();
@@ -113,4 +113,40 @@ test("last response with chained mocks is used with multiple fetches with thenRe
 
   expect(response3.status).toBe(400);
   expect(json3).toStrictEqual({ response: "response2" });
+});
+
+const postExample = () =>
+  fetch("https://example.com/123", {
+    method: "POST",
+  }).then((res) => res);
+
+const postExample2 = () =>
+  fetch("https://example.com/987", {
+    method: "POST",
+    body: JSON.stringify({ param1: "example" }),
+    headers: { "test-header": "testValue" },
+  }).then((res) => res);
+
+test("can assert on request body, headers and headers while chaining", async () => {
+  when(post("https://example.com/:id"))
+    .thenReturn(ok({ response: "response1" }), {
+      withRequest: ({ params }) => expect(params).toEqual({ id: "123" }),
+    })
+    .thenReturn(badRequest({ response: "response2" }), ({ body, params, headers }) => {
+      expect(body).toEqual(JSON.stringify({ param2: "goodbye" }));
+      expect(params).toEqual({ id: "987" });
+      expect(headers).toEqual({ "test-header": "testValue" });
+    });
+
+  const response1 = await postExample();
+  const json1 = await response1.json();
+
+  expect(response1.status).toBe(200);
+  expect(json1).toStrictEqual({ response: "response1" });
+
+  const response2 = await postExample2();
+  const json2 = await response2.json();
+
+  expect(response2.status).toBe(400);
+  expect(json2).toStrictEqual({ response: "response2" });
 });

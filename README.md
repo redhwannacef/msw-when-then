@@ -11,6 +11,7 @@ msw-when-then aims to help with that.
 
 - Succinct `when-then` style Api
 - Mock Chaining
+- Easily mock based on request details
 
 ## Installation
 
@@ -18,7 +19,9 @@ msw-when-then aims to help with that.
 
 ## Usage
 
-### Basic Example
+### Examples
+
+#### Basic Example
 
 ```js
 const { rest } = require("msw");
@@ -34,29 +37,100 @@ beforeAll(() => server.listen());
 afterAll(() => server.close());
 afterEach(() => server.resetHandlers());
 
-const fetchExample = () => fetch("https://example.com").then((res) => res);
+const httpRequest = (path, init) => fetch(path, init).then((res) => res);
+
+test("mocks api", async () => {
+  when(get("https://example.com")).thenReturn(ok({ response: "first response" }));
+
+  const response1 =  await httpRequest("https://example.com");
+  const json1 = await response1.json();
+
+  expect(response1.status).toBe(200);
+  expect(json1).toStrictEqual({ response: "first response" });
+});
+```
+
+#### Chaining Example
+
+```js
+const { rest } = require("msw");
+const { setupServer } = require("msw/node");
+const { whenThen, get, ok, badRequest } = require("msw-when-then");
+const fetch = require("node-fetch");
+
+const server = setupServer();
+
+const { when } = whenThen(server, rest);
+
+beforeAll(() => server.listen());
+afterAll(() => server.close());
+afterEach(() => server.resetHandlers());
+
+const httpRequest = (path, init) => fetch(path, init).then((res) => res);
 
 test("mocks chained responses with mix of thenReturn and then", async () => {
   when(get("https://example.com"))
     .thenReturn(ok({ response: "first response" }))
     .then((req, res, ctx) => res(ctx.status(400), ctx.json({ response: "last response" })));
 
-  const response1 = await fetchExample();
+  const response1 = await httpRequest("https://example.com");
   const json1 = await response1.json();
 
   expect(response1.status).toBe(200);
   expect(json1).toStrictEqual({ response: "first response" });
 
-  const response2 = await fetchExample();
+  const response2 = await httpRequest("https://example.com");
   const json2 = await response2.json();
 
   expect(response2.status).toBe(400);
   expect(json2).toStrictEqual({ response: "last response" });
 
-  const response3 = await fetchExample();
+  const response3 = await httpRequest("https://example.com");
   const json3 = await response3.json();
 
   expect(response3.status).toBe(400);
   expect(json3).toStrictEqual({ response: "last response" });
+});
+```
+
+#### Mock with request data Example
+
+```js
+const { rest } = require("msw");
+const { setupServer } = require("msw/node");
+const { whenThen, get, ok, badRequest } = require("msw-when-then");
+const fetch = require("node-fetch");
+
+const server = setupServer();
+
+const { when } = whenThen(server, rest);
+
+beforeAll(() => server.listen());
+afterAll(() => server.close());
+afterEach(() => server.resetHandlers());
+
+const httpRequest = (path, init) => fetch(path, init).then((res) => res);
+
+test("mocks api given the correct request data", async () => {
+  when(post("https://example.com/:id")).thenReturnFor(
+    request(
+      withBody({ "some-body-key": "some body value" }),
+      withHeaders({ "some-header-key": "some header value" }),
+      withParams({ id: "some-id" })
+    ),
+    ok({ response: "success" })
+  );
+
+  const body = JSON.stringify({ "some-body-key": "some body value" });
+  const headers = { "some-header-key": "some header value" };
+  const response = await httpRequest("https://example.com/some-id", {
+    method: "POST",
+    body,
+    headers,
+  });
+  const json = await response.json();
+
+  expect(response.status).toBe(200);
+  expect(json).toStrictEqual({ response: "success" });
 });
 ```

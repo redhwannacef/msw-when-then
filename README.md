@@ -21,7 +21,7 @@ msw-when-then aims to help with that.
 
 ### Examples
 
-#### Basic Example
+__Basic Example__
 
 ```js
 const { rest } = require("msw");
@@ -39,6 +39,7 @@ afterEach(() => server.resetHandlers());
 
 const httpRequest = (path, init) => fetch(path, init).then((res) => res);
 
+// Simple Mock
 test("mocks api", async () => {
   when(get("https://example.com")).thenReturn(ok({ response: "first response" }));
 
@@ -48,26 +49,8 @@ test("mocks api", async () => {
   expect(response1.status).toBe(200);
   expect(json1).toStrictEqual({ response: "first response" });
 });
-```
 
-#### Chaining Example
-
-```js
-const { rest } = require("msw");
-const { setupServer } = require("msw/node");
-const { whenThen, get, ok, badRequest } = require("msw-when-then");
-const fetch = require("node-fetch");
-
-const server = setupServer();
-
-const { when } = whenThen(server, rest);
-
-beforeAll(() => server.listen());
-afterAll(() => server.close());
-afterEach(() => server.resetHandlers());
-
-const httpRequest = (path, init) => fetch(path, init).then((res) => res);
-
+// Chaining Mocks
 test("mocks chained responses with mix of thenReturn and then", async () => {
   when(get("https://example.com"))
     .thenReturn(ok({ response: "first response" }))
@@ -91,26 +74,8 @@ test("mocks chained responses with mix of thenReturn and then", async () => {
   expect(response3.status).toBe(400);
   expect(json3).toStrictEqual({ response: "last response" });
 });
-```
 
-#### Mock with request data Example
-
-```js
-const { rest } = require("msw");
-const { setupServer } = require("msw/node");
-const { whenThen, get, ok, badRequest } = require("msw-when-then");
-const fetch = require("node-fetch");
-
-const server = setupServer();
-
-const { when } = whenThen(server, rest);
-
-beforeAll(() => server.listen());
-afterAll(() => server.close());
-afterEach(() => server.resetHandlers());
-
-const httpRequest = (path, init) => fetch(path, init).then((res) => res);
-
+// Mocking with explicit request data
 test("mocks api given the correct request data", async () => {
   when(post("https://example.com/:id")).thenReturnFor(
     request(

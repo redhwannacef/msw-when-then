@@ -26,7 +26,7 @@ __Basic Example__
 ```js
 const { rest } = require("msw");
 const { setupServer } = require("msw/node");
-const { whenThen, get, ok, badRequest } = require("msw-when-then");
+const { whenThen, get, ok, badRequest, request, withBody, withHeaders, withParams  } = require("msw-when-then");
 const fetch = require("node-fetch");
 
 const server = setupServer();

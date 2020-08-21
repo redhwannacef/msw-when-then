@@ -1,10 +1,10 @@
-const parse = (obj) => (obj === "" ? {} : JSON.parse(obj));
-
 const contains = (obj, source) =>
   Object.keys(source).every((key) => obj.hasOwnProperty(key) && obj[key] === source[key]);
 
 const matches = (obj, source) =>
-  Object.keys(obj).length === Object.keys(source).length && contains(obj, source);
+  typeof obj === "string"
+    ? obj === source
+    : Object.keys(obj).length === Object.keys(source).length && contains(obj, source);
 
 const whenThen = (server, rest) => {
   const when = ({ method, regex }) => {
@@ -18,21 +18,14 @@ const whenThen = (server, rest) => {
     };
 
     const thenReturnFor = (request, { status, body: responseBody = null }) => {
-      const {
-        body: requestBody = {},
-        headers: requestHeaders = {},
-        params: requestParams = {},
-      } = request;
+      const { body: requestBody, headers: requestHeaders, params: requestParams } = request;
 
-      const resolver = (req, res, context) => {
-        if (
-          matches(parse(req.body), requestBody) &&
-          contains(req.headers.map, requestHeaders) &&
-          matches({ ...req.params }, requestParams)
-        ) {
-          return res(context.status(status), context.json(responseBody));
-        }
-      };
+      const resolver = (req, res, context) =>
+        (!requestBody || matches(req.body, requestBody)) &&
+        (!requestHeaders || contains(req.headers.map, requestHeaders)) &&
+        (!requestParams || matches({ ...req.params }, requestParams)) &&
+        res(context.status(status), context.json(responseBody));
+
       resolvers.push(resolver);
       return { thenReturn, thenReturnFor, then };
     };

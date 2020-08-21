@@ -26,7 +26,7 @@ __Basic Example__
 ```js
 const { rest } = require("msw");
 const { setupServer } = require("msw/node");
-const { whenThen, get, ok, badRequest, request, withBody, withHeaders, withParams  } = require("msw-when-then");
+const { whenThen, get, ok, badRequest, request, withBody, withHeaders, withParams } = require("msw-when-then");
 const fetch = require("node-fetch");
 
 const server = setupServer();
@@ -80,14 +80,14 @@ test("mocks api given the correct request data", async () => {
   when(post("https://example.com/:id")).thenReturnFor(
     request(
       withBody({ "some-body-key": "some body value" }),
-      withHeaders({ "some-header-key": "some header value" }),
+      withHeaders({ "content-Type": "application/json" }),
       withParams({ id: "some-id" })
     ),
     ok({ response: "success" })
   );
 
+  const headers = { "content-Type": "application/json" };
   const body = JSON.stringify({ "some-body-key": "some body value" });
-  const headers = { "some-header-key": "some header value" };
   const response = await httpRequest("https://example.com/some-id", {
     method: "POST",
     body,

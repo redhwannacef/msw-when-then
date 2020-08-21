@@ -81,15 +81,36 @@ test("mocking response with empty request data acts like thenReturn", async () =
   expect(json).toStrictEqual({ response: "success" });
 });
 
-test("mocks response including body data", async () => {
+test("mocks response including json body data", async () => {
   when(post("https://example.com")).thenReturnFor(
     request(withBody({ "some-key": "some value" })),
     ok({ response: "success" })
   );
 
+  const headers = { "content-Type": "application/json" };
   const body = JSON.stringify({ "some-key": "some value" });
   const response = await httpRequest("https://example.com", {
     method: "POST",
+    headers,
+    body,
+  });
+  const json = await response.json();
+
+  expect(response.status).toBe(200);
+  expect(json).toStrictEqual({ response: "success" });
+});
+
+test("mocks response including text body data", async () => {
+  when(post("https://example.com")).thenReturnFor(
+    request(withBody("some value")),
+    ok({ response: "success" })
+  );
+
+  const headers = { "content-Type": "application/text" };
+  const body = "some value";
+  const response = await httpRequest("https://example.com", {
+    method: "POST",
+    headers,
     body,
   });
   const json = await response.json();
@@ -100,11 +121,11 @@ test("mocks response including body data", async () => {
 
 test("mocks response including header data", async () => {
   when(post("https://example.com")).thenReturnFor(
-    request(withHeaders({ "some-key": "some value" })),
+    request(withHeaders({ "content-type": "application/json" })),
     ok({ response: "success" })
   );
 
-  const headers = { "some-key": "some value" };
+  const headers = { "content-type": "application/json" };
   const response = await httpRequest("https://example.com", {
     method: "POST",
     headers,
@@ -134,14 +155,14 @@ test("mocks response including body, headers and params", async () => {
   when(post("https://example.com/:id")).thenReturnFor(
     request(
       withBody({ "some-body-key": "some body value" }),
-      withHeaders({ "some-header-key": "some header value" }),
+      withHeaders({ "content-type": "application/json" }),
       withParams({ id: "some-id" })
     ),
     ok({ response: "success" })
   );
 
+  const headers = { "content-type": "application/json" };
   const body = JSON.stringify({ "some-body-key": "some body value" });
-  const headers = { "some-header-key": "some header value" };
   const response = await httpRequest("https://example.com/some-id", {
     method: "POST",
     body,

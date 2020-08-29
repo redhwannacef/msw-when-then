@@ -1,50 +1,49 @@
 const { get, post, put, _delete, patch, options, mask } = require("./RestMethods");
 
-test("get returns method with regex", () => {
-  expect(get("some regex")).toStrictEqual({
+test("get returns method with url", () => {
+  expect(get("some url")).toStrictEqual({
     method: "get",
-    regex: "some regex",
+    url: "some url",
   });
 });
 
-test("post returns method with regex", () => {
-  expect(post("some regex")).toStrictEqual({
+test("post returns method with url", () => {
+  expect(post("some url")).toStrictEqual({
     method: "post",
-    regex: "some regex",
+    url: "some url",
   });
 });
 
-test("put returns method with regex", () => {
-  expect(put("some regex")).toStrictEqual({
+test("put returns method with url", () => {
+  expect(put("some url")).toStrictEqual({
     method: "put",
-    regex: "some regex",
+    url: "some url",
   });
 });
-test("_delete returns method with regex", () => {
-  expect(_delete("some regex")).toStrictEqual({
+test("_delete returns method with url", () => {
+  expect(_delete("some url")).toStrictEqual({
     method: "delete",
-    regex: "some regex",
+    url: "some url",
   });
 });
 
-test("patch returns method with regex", () => {
-  expect(patch("some regex")).toStrictEqual({
+test("patch returns method with url", () => {
+  expect(patch("some url")).toStrictEqual({
     method: "patch",
-    regex: "some regex",
+    url: "some url",
   });
 });
 
-test("options returns method with regex", () => {
-  expect(options("some regex")).toStrictEqual({
+test("options returns method with url", () => {
+  expect(options("some url")).toStrictEqual({
     method: "options",
-    regex: "some regex",
+    url: "some url",
   });
 });
 
-test("mask returns method with regex", () => {
-  expect(mask("some method", "some regex")).toStrictEqual({
+test("mask returns method with url", () => {
+  expect(mask("some method", "some url")).toStrictEqual({
     method: "some method",
-    regex: "some regex",
+    url: "some url",
   });
 });
-

@@ -1,11 +1,11 @@
-const mask = (method, regex) => ({ method, regex });
+const mask = (method, url) => ({ method, url });
 
-const get = (regex) => mask("get", regex);
-const post = (regex) => mask("post", regex);
-const put = (regex) => mask("put", regex);
-const _delete = (regex) => mask("delete", regex);
-const patch = (regex) => mask("patch", regex);
-const options = (regex) => mask("options", regex);
+const get = (url) => mask("get", url);
+const post = (url) => mask("post", url);
+const put = (url) => mask("put", url);
+const _delete = (url) => mask("delete", url);
+const patch = (url) => mask("patch", url);
+const options = (url) => mask("options", url);
 
 module.exports = {
   get,

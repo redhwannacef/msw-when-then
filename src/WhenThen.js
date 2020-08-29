@@ -7,14 +7,14 @@ const matches = (obj, source) =>
     : Object.keys(obj).length === Object.keys(source).length && contains(obj, source);
 
 const whenThen = (server, rest) => {
-  const when = ({ method, regex }) => {
+  const when = ({ method, url }) => {
     let count = 0;
     let resolvers = [];
 
     const thenReturn = ({ status, body = null }) => {
       const resolver = (req, res, context) => res(context.status(status), context.json(body));
       resolvers.push(resolver);
-      return { thenReturn, thenReturnFor, then };
+      return thenFunctions;
     };
 
     const thenReturnFor = (request, { status, body: responseBody = null }) => {
@@ -27,20 +27,22 @@ const whenThen = (server, rest) => {
         res(context.status(status), context.json(responseBody));
 
       resolvers.push(resolver);
-      return { thenReturn, thenReturnFor, then };
+      return thenFunctions;
     };
 
     const then = (resolver = () => {}) => {
       resolvers.push(resolver);
-      return { thenReturn, thenReturnFor, then };
+      return thenFunctions;
     };
+
+    const thenFunctions = { thenReturn, thenReturnFor, then };
 
     const resolver = (count) =>
       count > resolvers.length - 1 ? resolvers[resolvers.length - 1] : resolvers[count];
 
-    server.use(rest[method](regex, (req, res, ctx) => resolver(count++)(req, res, ctx)));
+    server.use(rest[method](url, (req, res, ctx) => resolver(count++)(req, res, ctx)));
 
-    return { thenReturn, thenReturnFor, then };
+    return thenFunctions;
   };
 
   return { when };

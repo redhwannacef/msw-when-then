@@ -11,7 +11,7 @@ msw-when-then aims to help with that.
 
 - Succinct `when-then` style Api
 - Mock Chaining
-- Easily mock based on request details
+- Implicitly assert request data is correct
 
 ## Installation
 
@@ -19,83 +19,66 @@ msw-when-then aims to help with that.
 
 ## Usage
 
-### Examples
-
-__Basic Example__
+### Initialise using MSW `server` and `rest`:
 
 ```js
-const { rest } = require("msw");
-const { setupServer } = require("msw/node");
-const { whenThen, get, ok, badRequest, request, withBody, withHeaders, withParams } = require("msw-when-then");
-const fetch = require("node-fetch");
-
-const server = setupServer();
+import { whenThen, get, ok } from "msw-when-then";
 
 const { when } = whenThen(server, rest);
+```
 
-beforeAll(() => server.listen());
-afterAll(() => server.close());
-afterEach(() => server.resetHandlers());
+### Then in your test:
 
-const httpRequest = (path, init) => fetch(path, init).then((res) => res);
+```js
+when(get("https://example.com")).thenReturn(ok({ foo: "bar" }));
+```
 
-// Simple Mock
-test("mocks api", async () => {
-  when(get("https://example.com")).thenReturn(ok({ response: "first response" }));
+---
 
-  const response1 =  await httpRequest("https://example.com");
-  const json1 = await response1.json();
+## Features
 
-  expect(response1.status).toBe(200);
-  expect(json1).toStrictEqual({ response: "first response" });
+### Chaining Mocks
+
+Familiar chaining pattern, the responses are return in order with the last response returned for all subsequent requests.
+
+```js
+import { get, badRequest, ok } from "msw-when-then";
+
+when(get("https://example.com"))
+  .thenReturn(badRequest({ response: "first request" }))
+  .thenReturn(ok({ response: "subsequent requests" }));
+```
+
+### Custom Resolvers
+
+Sometimes you need to take things into your own hands. We expose the original MSW resolver function, so you can do whatever you like.
+See [MSW Docs](https://mswjs.io/docs/basics/response-resolver) for more details.
+
+```js
+import { get } from "msw-when-then";
+
+when(get("https://example.com")).then((req, res, ctx) => {
+  // Any additional logic here
+  return res(ctx.status(400), ctx.json({ response: "last response" }));
 });
+```
 
-// Chaining Mocks
-test("mocks chained responses with mix of thenReturn and then", async () => {
-  when(get("https://example.com"))
-    .thenReturn(ok({ response: "first response" }))
-    .then((req, res, ctx) => res(ctx.status(400), ctx.json({ response: "last response" })));
+### Implicitly assert request data
 
-  const response1 = await httpRequest("https://example.com");
-  const json1 = await response1.json();
+Mocking APIs is great, but how can we ensure our app is sending the right data? We can do this by specifying the expected
+request data when mocking.
 
-  expect(response1.status).toBe(200);
-  expect(json1).toStrictEqual({ response: "first response" });
+_Note: The `id` key in the `withParams` here matches the `:id` argument in the `post` url_
 
-  const response2 = await httpRequest("https://example.com");
-  const json2 = await response2.json();
+```js
+import { post, request, withBody, withHeaders, withParams, ok } from "msw-when-then";
 
-  expect(response2.status).toBe(400);
-  expect(json2).toStrictEqual({ response: "last response" });
-
-  const response3 = await httpRequest("https://example.com");
-  const json3 = await response3.json();
-
-  expect(response3.status).toBe(400);
-  expect(json3).toStrictEqual({ response: "last response" });
-});
-
-// Mocking with explicit request data
-test("mocks api given the correct request data", async () => {
-  when(post("https://example.com/:id")).thenReturnFor(
-    request(
-      withBody({ "some-body-key": "some body value" }),
-      withHeaders({ "content-Type": "application/json" }),
-      withParams({ id: "some-id" })
-    ),
-    ok({ response: "success" })
-  );
-
-  const headers = { "content-Type": "application/json" };
-  const body = JSON.stringify({ "some-body-key": "some body value" });
-  const response = await httpRequest("https://example.com/some-id", {
-    method: "POST",
-    body,
-    headers,
-  });
-  const json = await response.json();
-
-  expect(response.status).toBe(200);
-  expect(json).toStrictEqual({ response: "success" });
-});
+when(post("https://example.com/:id")).thenReturnFor(
+  request(
+    withBody({ foo: "bar" }),
+    withHeaders({ "content-type": "application/json" }),
+    withParams({ id: "expected-id" })
+  ),
+  ok({ response: "success" })
+);
 ```

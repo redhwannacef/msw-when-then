@@ -14,9 +14,9 @@ afterEach(() => server.resetHandlers());
 const httpRequest = (path, init) => fetch(path, init).then((res) => res);
 
 test("mocks response with thenReturn", async () => {
-  when(get("https://example.com")).thenReturn(ok({ response: "success" }));
+  when(get("https://some.url")).thenReturn(ok({ response: "success" }));
 
-  const response = await httpRequest("https://example.com");
+  const response = await httpRequest("https://some.url");
   const json = await response.json();
 
   expect(response.status).toBe(200);
@@ -24,15 +24,15 @@ test("mocks response with thenReturn", async () => {
 });
 
 test("mocks response with thenReturn for multiple fetches", async () => {
-  when(get("https://example.com")).thenReturn(ok({ response: "success" }));
+  when(get("https://some.url")).thenReturn(ok({ response: "success" }));
 
-  const response = await httpRequest("https://example.com");
+  const response = await httpRequest("https://some.url");
   const json = await response.json();
 
   expect(response.status).toBe(200);
   expect(json).toStrictEqual({ response: "success" });
 
-  const response2 = await httpRequest("https://example.com");
+  const response2 = await httpRequest("https://some.url");
   const json2 = await response2.json();
 
   expect(response2.status).toBe(200);
@@ -40,11 +40,11 @@ test("mocks response with thenReturn for multiple fetches", async () => {
 });
 
 test("mocks response with then", async () => {
-  when(get("https://example.com")).then((req, res, ctx) =>
+  when(get("https://some.url")).then((req, res, ctx) =>
     res(ctx.status(200), ctx.json({ response: "success" }))
   );
 
-  const response = await httpRequest("https://example.com");
+  const response = await httpRequest("https://some.url");
   const json = await response.json();
 
   expect(response.status).toBe(200);
@@ -52,17 +52,17 @@ test("mocks response with then", async () => {
 });
 
 test("mocks response with then for multiple fetches", async () => {
-  when(get("https://example.com")).then((req, res, ctx) =>
+  when(get("https://some.url")).then((req, res, ctx) =>
     res(ctx.status(200), ctx.json({ response: "success" }))
   );
 
-  const response = await httpRequest("https://example.com");
+  const response = await httpRequest("https://some.url");
   const json = await response.json();
 
   expect(response.status).toBe(200);
   expect(json).toStrictEqual({ response: "success" });
 
-  const response2 = await httpRequest("https://example.com");
+  const response2 = await httpRequest("https://some.url");
   const json2 = await response2.json();
 
   expect(response2.status).toBe(200);
@@ -70,9 +70,9 @@ test("mocks response with then for multiple fetches", async () => {
 });
 
 test("mocking response with empty request data acts like thenReturn", async () => {
-  when(post("https://example.com")).thenReturnFor(request(), ok({ response: "success" }));
+  when(post("https://some.url")).thenReturnFor(request(), ok({ response: "success" }));
 
-  const response = await httpRequest("https://example.com", {
+  const response = await httpRequest("https://some.url", {
     method: "POST",
   });
   const json = await response.json();
@@ -82,14 +82,14 @@ test("mocking response with empty request data acts like thenReturn", async () =
 });
 
 test("mocks response including json body data", async () => {
-  when(post("https://example.com")).thenReturnFor(
+  when(post("https://some.url")).thenReturnFor(
     request(withBody({ "some-key": "some value" })),
     ok({ response: "success" })
   );
 
   const headers = { "content-Type": "application/json" };
   const body = JSON.stringify({ "some-key": "some value" });
-  const response = await httpRequest("https://example.com", {
+  const response = await httpRequest("https://some.url", {
     method: "POST",
     headers,
     body,
@@ -101,14 +101,14 @@ test("mocks response including json body data", async () => {
 });
 
 test("mocks response including text body data", async () => {
-  when(post("https://example.com")).thenReturnFor(
+  when(post("https://some.url")).thenReturnFor(
     request(withBody("some value")),
     ok({ response: "success" })
   );
 
   const headers = { "content-Type": "application/text" };
   const body = "some value";
-  const response = await httpRequest("https://example.com", {
+  const response = await httpRequest("https://some.url", {
     method: "POST",
     headers,
     body,
@@ -120,13 +120,13 @@ test("mocks response including text body data", async () => {
 });
 
 test("mocks response including header data", async () => {
-  when(post("https://example.com")).thenReturnFor(
+  when(post("https://some.url")).thenReturnFor(
     request(withHeaders({ "content-type": "application/json" })),
     ok({ response: "success" })
   );
 
   const headers = { "content-type": "application/json" };
-  const response = await httpRequest("https://example.com", {
+  const response = await httpRequest("https://some.url", {
     method: "POST",
     headers,
   });
@@ -137,12 +137,12 @@ test("mocks response including header data", async () => {
 });
 
 test("mocks response including params", async () => {
-  when(post("https://example.com/:id")).thenReturnFor(
+  when(post("https://some.url/:id")).thenReturnFor(
     request(withParams({ id: "some-id" })),
     ok({ response: "success" })
   );
 
-  const response = await httpRequest("https://example.com/some-id", {
+  const response = await httpRequest("https://some.url/some-id", {
     method: "POST",
   });
   const json = await response.json();
@@ -152,7 +152,7 @@ test("mocks response including params", async () => {
 });
 
 test("mocks response including body, headers and params", async () => {
-  when(post("https://example.com/:id")).thenReturnFor(
+  when(post("https://some.url/:id")).thenReturnFor(
     request(
       withBody({ "some-body-key": "some body value" }),
       withHeaders({ "content-type": "application/json" }),
@@ -163,7 +163,7 @@ test("mocks response including body, headers and params", async () => {
 
   const headers = { "content-type": "application/json" };
   const body = JSON.stringify({ "some-body-key": "some body value" });
-  const response = await httpRequest("https://example.com/some-id", {
+  const response = await httpRequest("https://some.url/some-id", {
     method: "POST",
     body,
     headers,
@@ -175,28 +175,28 @@ test("mocks response including body, headers and params", async () => {
 });
 
 test("mocks response fails without correct body data", async () => {
-  when(post("https://example.com")).thenReturnFor(
-    request(withBody({ "some-key": "some value" })),
+  when(post("https://some.url")).thenReturnFor(
+    request(withBody("some value")),
     ok({ response: "success" })
   );
 
   const testRequest = async () =>
-    await httpRequest("https://example.com", {
+    await httpRequest("https://some.url", {
       method: "POST",
-      body: JSON.stringify({ "some-other-key": "some other value" }),
+      body: "some other value",
     });
 
   await expect(testRequest()).rejects.toThrow();
 });
 
 test("mocks response fails without correct header data", async () => {
-  when(post("https://example.com")).thenReturnFor(
+  when(post("https://some.url")).thenReturnFor(
     request(withHeaders({ "some-header-key": "some header value" })),
     ok({ response: "success" })
   );
 
   const testRequest = async () =>
-    await httpRequest("https://example.com", {
+    await httpRequest("https://some.url", {
       method: "POST",
       headers: { "some-other-header-key": "some other header value" },
     });
@@ -205,13 +205,13 @@ test("mocks response fails without correct header data", async () => {
 });
 
 test("mocks response fails without correct params", async () => {
-  when(post("https://example.com/:id")).thenReturnFor(
+  when(post("https://some.url/:id")).thenReturnFor(
     request(withParams({ id: "some-id" })),
     ok({ response: "success" })
   );
 
   const testRequest = async () =>
-    await httpRequest("https://example.com/some-other-id", {
+    await httpRequest("https://some.url/some-other-id", {
       method: "POST",
     });
 

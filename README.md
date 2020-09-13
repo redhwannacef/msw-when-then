@@ -30,7 +30,7 @@ const { when } = whenThen(server, rest);
 ### Then in your test:
 
 ```js
-when(get("https://example.com")).thenReturn(ok({ foo: "bar" }));
+when(get("https://some.url")).thenReturn(ok({ foo: "bar" }));
 ```
 
 ---
@@ -44,7 +44,7 @@ Familiar chaining pattern, the responses are return in order with the last respo
 ```js
 import { get, badRequest, ok } from "msw-when-then";
 
-when(get("https://example.com"))
+when(get("https://some.url"))
   .thenReturn(badRequest({ response: "first request" }))
   .thenReturn(ok({ response: "subsequent requests" }));
 ```
@@ -57,7 +57,7 @@ See [MSW Docs](https://mswjs.io/docs/basics/response-resolver) for more details.
 ```js
 import { get } from "msw-when-then";
 
-when(get("https://example.com")).then((req, res, ctx) => {
+when(get("https://some.url")).then((req, res, ctx) => {
   // Any additional logic here
   return res(ctx.status(400), ctx.json({ response: "last response" }));
 });
@@ -73,7 +73,7 @@ _Note: The `id` key in the `withParams` here matches the `:id` argument in the `
 ```js
 import { post, request, withBody, withHeaders, withParams, ok } from "msw-when-then";
 
-when(post("https://example.com/:id")).thenReturnFor(
+when(post("https://some.url/:id")).thenReturnFor(
   request(
     withBody({ foo: "bar" }),
     withHeaders({ "content-type": "application/json" }),

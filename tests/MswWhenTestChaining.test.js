@@ -11,10 +11,10 @@ beforeAll(() => server.listen());
 afterAll(() => server.close());
 afterEach(() => server.resetHandlers());
 
-const fetchExample = () => fetch("https://example.com").then((res) => res);
+const fetchExample = () => fetch("https://some.url").then((res) => res);
 
 test("mocks chained responses with thenReturn", async () => {
-  when(get("https://example.com"))
+  when(get("https://some.url"))
     .thenReturn(ok({ response: "response1" }))
     .thenReturn(badRequest({ response: "response2" }));
 
@@ -32,7 +32,7 @@ test("mocks chained responses with thenReturn", async () => {
 });
 
 test("mocks chained responses with then", async () => {
-  when(get("https://example.com"))
+  when(get("https://some.url"))
     .then((req, res, ctx) => res(ctx.status(200), ctx.json({ response: "response1" })))
     .then((req, res, ctx) => res(ctx.status(400), ctx.json({ response: "response2" })));
 
@@ -50,7 +50,7 @@ test("mocks chained responses with then", async () => {
 });
 
 test("mocks chained responses with mix of thenReturn and then", async () => {
-  when(get("https://example.com"))
+  when(get("https://some.url"))
     .thenReturn(ok({ response: "response1" }))
     .then((req, res, ctx) => res(ctx.status(400), ctx.json({ response: "response2" })));
 
@@ -68,7 +68,7 @@ test("mocks chained responses with mix of thenReturn and then", async () => {
 });
 
 test("last response with chained mocks is used with multiple fetches with then", async () => {
-  when(get("https://example.com"))
+  when(get("https://some.url"))
     .thenReturn(ok({ response: "response1" }))
     .then((req, res, ctx) => res(ctx.status(400), ctx.json({ response: "response2" })));
 
@@ -92,7 +92,7 @@ test("last response with chained mocks is used with multiple fetches with then",
 });
 
 test("last response with chained mocks is used with multiple fetches with thenReturn", async () => {
-  when(get("https://example.com"))
+  when(get("https://some.url"))
     .then((req, res, ctx) => res(ctx.status(200), ctx.json({ response: "response1" })))
     .thenReturn(badRequest({ response: "response2" }));
 

@@ -1,5 +1,7 @@
 # msw-when-then
 
+![Tests](https://github.com/redhwannacef/msw-when-then/workflows/Tests/badge.svg)
+
 A non-invasive '`when-then`' style API for [MSW](https://mswjs.io/).
 
 ## Why?

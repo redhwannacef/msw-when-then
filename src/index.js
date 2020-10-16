@@ -9,7 +9,7 @@ const {
   response,
 } = require("./Responses");
 const { get, post, put, _delete, patch, options, mask } = require("./RestMethods");
-const { request, withBody, withHeaders, withParams } = require("./Request");
+const { request, withBody, withHeaders, withParams, withSearchParams } = require("./Request");
 
 module.exports = {
   whenThen,
@@ -31,4 +31,5 @@ module.exports = {
   withBody,
   withHeaders,
   withParams,
+  withSearchParams,
 };

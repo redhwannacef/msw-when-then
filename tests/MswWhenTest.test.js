@@ -1,6 +1,16 @@
 const { rest } = require("msw");
 const { setupServer } = require("msw/node");
-const { whenThen, get, post, ok, request, withBody, withHeaders, withParams } = require("../src");
+const {
+  whenThen,
+  get,
+  post,
+  ok,
+  request,
+  withBody,
+  withHeaders,
+  withParams,
+  withSearchParams,
+} = require("../src");
 const fetch = require("node-fetch");
 
 const server = setupServer();
@@ -189,19 +199,48 @@ test("mocks response including params", async () => {
   expect(json).toStrictEqual({ response: "success" });
 });
 
-test("mocks response including body, headers and params", async () => {
+test("mocks response including search params", async () => {
+  when(get("https://some.url/")).thenReturnFor(
+    request(withSearchParams({ id: "some-id" })),
+    ok({ response: "success" })
+  );
+  const response = await httpRequest("https://some.url/?id=some-id", {
+    method: "GET",
+  });
+  const json = await response.json();
+  expect(response.status).toBe(200);
+  expect(json).toStrictEqual({ response: "success" });
+});
+
+test("mocks response including search params with array data", async () => {
+  when(get("https://some.url/")).thenReturnFor(
+    request(withSearchParams({ id: ["123", "456"] })),
+    ok({ response: "success" })
+  );
+
+  const response = await httpRequest("https://some.url/?id=123&id=456", {
+    method: "GET",
+  });
+  const json = await response.json();
+
+  expect(response.status).toBe(200);
+  expect(json).toStrictEqual({ response: "success" });
+});
+
+test("mocks response including body, headers, params and search params", async () => {
   when(post("https://some.url/:id")).thenReturnFor(
     request(
       withBody({ "some-body-key": "some body value" }),
       withHeaders({ "content-type": "application/json" }),
-      withParams({ id: "some-id" })
+      withParams({ id: "some-id" }),
+      withSearchParams({ id: "some-id-2" })
     ),
     ok({ response: "success" })
   );
 
   const headers = { "content-type": "application/json" };
   const body = JSON.stringify({ "some-body-key": "some body value" });
-  const response = await httpRequest("https://some.url/some-id", {
+  const response = await httpRequest("https://some.url/some-id?id=some-id-2", {
     method: "POST",
     body,
     headers,
@@ -250,6 +289,34 @@ test("mocks response fails without correct params", async () => {
 
   const testRequest = async () =>
     await httpRequest("https://some.url/some-other-id", {
+      method: "POST",
+    });
+
+  await expect(testRequest()).rejects.toThrow();
+});
+
+test("mocks response fails without correct search params", async () => {
+  when(post("https://some.url/")).thenReturnFor(
+    request(withSearchParams({ id: "some-id" })),
+    ok({ response: "success" })
+  );
+
+  const testRequest = async () =>
+    await httpRequest("https://some.url/?id=some-other-id", {
+      method: "POST",
+    });
+
+  await expect(testRequest()).rejects.toThrow();
+});
+
+test("mocks response fails without correct search params with array data", async () => {
+  when(post("https://some.url/")).thenReturnFor(
+    request(withSearchParams({ id: ["123", "456"] })),
+    ok({ response: "success" })
+  );
+
+  const testRequest = async () =>
+    await httpRequest("https://some.url/?id=123&id=987", {
       method: "POST",
     });
 

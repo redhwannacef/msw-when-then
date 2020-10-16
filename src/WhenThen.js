@@ -1,10 +1,7 @@
+const isEqual = require('lodash.isequal');
+
 const contains = (obj, source) =>
   Object.keys(source).every((key) => obj.hasOwnProperty(key) && obj[key] === source[key]);
-
-const matches = (obj, source) =>
-  typeof obj === "string"
-    ? obj === source
-    : Object.keys(obj).length === Object.keys(source).length && contains(obj, source);
 
 const whenThen = (server, rest) => {
   const when = ({ method, url }) => {
@@ -21,9 +18,9 @@ const whenThen = (server, rest) => {
       const { body: requestBody, headers: requestHeaders, params: requestParams } = request;
 
       const resolver = (req, res, context) =>
-        (!requestBody || matches(req.body, requestBody)) &&
+        (!requestBody || isEqual(req.body, requestBody)) &&
         (!requestHeaders || contains(req.headers.map, requestHeaders)) &&
-        (!requestParams || matches({ ...req.params }, requestParams)) &&
+        (!requestParams || isEqual({ ...req.params }, requestParams)) &&
         res(context.status(status), context.json(responseBody));
 
       resolvers.push(resolver);

@@ -100,6 +100,44 @@ test("mocks response including json body data", async () => {
   expect(json).toStrictEqual({ response: "success" });
 });
 
+test("mocks response including json array body data", async () => {
+  when(post("https://some.url")).thenReturnFor(
+    request(withBody([{ "some-key": "some value" }])),
+    ok({ response: "success" })
+  );
+
+  const headers = { "content-Type": "application/json" };
+  const body = JSON.stringify([{ "some-key": "some value" }]);
+  const response = await httpRequest("https://some.url", {
+    method: "POST",
+    headers,
+    body,
+  });
+  const json = await response.json();
+
+  expect(response.status).toBe(200);
+  expect(json).toStrictEqual({ response: "success" });
+});
+
+test("mocks response including json body with embedded array data", async () => {
+  when(post("https://some.url")).thenReturnFor(
+    request(withBody({ "some-key": ["some value"] })),
+    ok({ response: "success" })
+  );
+
+  const headers = { "content-Type": "application/json" };
+  const body = JSON.stringify({ "some-key": ["some value"] });
+  const response = await httpRequest("https://some.url", {
+    method: "POST",
+    headers,
+    body,
+  });
+  const json = await response.json();
+
+  expect(response.status).toBe(200);
+  expect(json).toStrictEqual({ response: "success" });
+});
+
 test("mocks response including text body data", async () => {
   when(post("https://some.url")).thenReturnFor(
     request(withBody("some value")),

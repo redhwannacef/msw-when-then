@@ -80,7 +80,10 @@ test("mocks response with then for multiple fetches", async () => {
 });
 
 test("mocking response with empty request data acts like thenReturn", async () => {
-  when(post("https://some.url")).thenReturnFor(request(), ok({ response: "success" }));
+  when(post("https://some.url")).thenReturnFor(
+    request(),
+    ok({ response: "success" })
+  );
 
   const response = await httpRequest("https://some.url", {
     method: "POST",

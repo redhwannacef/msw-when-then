@@ -46,7 +46,10 @@ export type MswResolver = (req: any, res: any, ctx: any) => any;
 
 export type Then = (resolver: MswResolver) => ThenFunctions;
 export type ThenReturn = (response: HttpResponse) => ThenFunctions;
-export type ThenReturnFor = (request: Request, response: HttpResponse) => ThenFunctions;
+export type ThenReturnFor = (
+  request: Request,
+  response: HttpResponse
+) => ThenFunctions;
 
 export type ThenFunctions = {
   then: Then;

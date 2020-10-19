@@ -8,8 +8,22 @@ const {
   notFound,
   response,
 } = require("./Responses");
-const { get, post, put, _delete, patch, options, mask } = require("./RestMethods");
-const { request, withBody, withHeaders, withParams, withSearchParams } = require("./Request");
+const {
+  get,
+  post,
+  put,
+  _delete,
+  patch,
+  options,
+  mask,
+} = require("./RestMethods");
+const {
+  request,
+  withBody,
+  withHeaders,
+  withParams,
+  withSearchParams,
+} = require("./Request");
 
 module.exports = {
   whenThen,

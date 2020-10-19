@@ -1,7 +1,9 @@
 const isEqual = require("lodash.isequal");
 
 const contains = (obj, source) =>
-  Object.keys(source).every((key) => obj.hasOwnProperty(key) && obj[key] === source[key]);
+  Object.keys(source).every(
+    (key) => obj.hasOwnProperty(key) && obj[key] === source[key]
+  );
 
 const searchParamsContains = (searchParams, requestSearchParams) =>
   Object.keys(requestSearchParams).every((key) => {
@@ -18,7 +20,8 @@ const whenThen = (server, rest) => {
     let resolvers = [];
 
     const thenReturn = ({ status, body = null }) => {
-      const resolver = (req, res, context) => res(context.status(status), context.json(body));
+      const resolver = (req, res, context) =>
+        res(context.status(status), context.json(body));
       resolvers.push(resolver);
       return thenFunctions;
     };
@@ -35,7 +38,8 @@ const whenThen = (server, rest) => {
         (!requestBody || isEqual(req.body, requestBody)) &&
         (!requestHeaders || contains(req.headers.map, requestHeaders)) &&
         (!requestParams || isEqual({ ...req.params }, requestParams)) &&
-        (!requestSearchParams || searchParamsContains(req.url.searchParams, requestSearchParams)) &&
+        (!requestSearchParams ||
+          searchParamsContains(req.url.searchParams, requestSearchParams)) &&
         res(context.status(status), context.json(responseBody));
 
       resolvers.push(resolver);
@@ -50,9 +54,13 @@ const whenThen = (server, rest) => {
     const thenFunctions = { thenReturn, thenReturnFor, then };
 
     const resolver = (count) =>
-      count > resolvers.length - 1 ? resolvers[resolvers.length - 1] : resolvers[count];
+      count > resolvers.length - 1
+        ? resolvers[resolvers.length - 1]
+        : resolvers[count];
 
-    server.use(rest[method](url, (req, res, ctx) => resolver(count++)(req, res, ctx)));
+    server.use(
+      rest[method](url, (req, res, ctx) => resolver(count++)(req, res, ctx))
+    );
 
     return thenFunctions;
   };

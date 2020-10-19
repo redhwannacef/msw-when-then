@@ -1,4 +1,12 @@
-const { get, post, put, _delete, patch, options, mask } = require("./RestMethods");
+const {
+  get,
+  post,
+  put,
+  _delete,
+  patch,
+  options,
+  mask,
+} = require("./RestMethods");
 
 test("get returns method with url", () => {
   expect(get("some url")).toStrictEqual({

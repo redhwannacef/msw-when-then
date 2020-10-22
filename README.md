@@ -1,8 +1,18 @@
-# msw-when-then
+<p align="center">
+  <img alt="logo" src="docs/static/img/logo.svg" width="300" />
+</p>
 
-![Tests](https://github.com/redhwannacef/msw-when-then/workflows/Tests/badge.svg)
+<h1 align="center">MSW When Then</h1>
+<h4 align="center">A non-invasive `when-then` style API for <a href="https://mswjs.io/" target="_blank" rel="noopener noreferrer">MSW</a>.</h4>
 
-A non-invasive '`when-then`' style API for [MSW](https://mswjs.io/).
+<p align="center">
+  <a href="https://www.npmjs.com/package/msw-when-then" target="_blank" rel="noopener noreferrer">
+    <img alt="Npm Version" src="https://img.shields.io/npm/v/msw-when-then">
+  </a>
+  <a href="https://github.com/redhwannacef/msw-when-then/actions?query=workflow%3ATests" target="_blank" rel="noopener noreferrer">
+    <img alt="Test status" src="https://github.com/redhwannacef/msw-when-then/workflows/Tests/badge.svg" />
+  </a>
+</p>
 
 ## Why?
 

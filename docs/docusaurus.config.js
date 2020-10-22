@@ -1,8 +1,8 @@
 module.exports = {
   title: "msw-when-then",
   tagline: "A succinct 'when-then' style api for MSW",
-  url: "https://your-docusaurus-test-site.com",
-  baseUrl: "/",
+  url: "https://redhwannacef.github.io/msw-when-then/",
+  baseUrl: "/msw-when-then/",
   onBrokenLinks: "throw",
   favicon: "img/favicon.ico",
   organizationName: "redhwannacef",

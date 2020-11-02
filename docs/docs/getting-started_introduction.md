@@ -16,7 +16,7 @@ Here are a few features that we think make msw-when-then useful.
 
 - [Succinct "when-then" style Api](examples_basic.md)
 - [Mock Chaining](features_mock-chaining.md)
-- [Implicitly assert request data is correct](docs/features_request-assertions.md)
+- [Implicitly assert request data is correct](features_request-assertions.md)
 
 ## Want to give it a go?
 

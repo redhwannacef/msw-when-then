@@ -6,7 +6,7 @@ module.exports = {
       "features_mocking",
       "features_mock-chaining",
       "features_custom-resolvers",
-      "features_data-assertions",
+      "features_request-assertions",
     ],
     API: ["api_when-then", "api_rest-methods", "api_response", "api_request"],
   },

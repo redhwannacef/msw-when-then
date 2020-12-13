@@ -1,6 +1,9 @@
 const whenThen = require("./WhenThen");
+const whenThenGraphQL = require("./WhenThenGraphQL");
 const {
   ok,
+  data,
+  errors,
   created,
   accepted,
   badRequest,
@@ -18,6 +21,10 @@ const {
   mask,
 } = require("./RestMethods");
 const {
+  query,
+  mutation,
+} = require("./GraphQLActions");
+const {
   request,
   withBody,
   withHeaders,
@@ -27,7 +34,10 @@ const {
 
 module.exports = {
   whenThen,
+  whenThenGraphQL,
   ok,
+  data,
+  errors,
   created,
   accepted,
   badRequest,
@@ -39,6 +49,8 @@ module.exports = {
   put,
   _delete,
   patch,
+  mutation,
+  query,
   options,
   mask,
   request,

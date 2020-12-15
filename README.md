@@ -24,6 +24,7 @@ msw-when-then aims to help with that.
 - Succinct `when-then` style Api
 - Mock Chaining
 - Implicitly assert request data is correct
+- Support for both Rest and GraphQL requests
 
 ## Installation
 

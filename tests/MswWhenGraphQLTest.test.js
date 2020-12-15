@@ -19,18 +19,20 @@ beforeAll(() => server.listen());
 afterAll(() => server.close());
 afterEach(() => server.resetHandlers());
 
-const graphqlAction = (url, query, options={}) => {
-  const contentTypeHeader = { 'Content-Type': 'application/json'}
-  const headers = options.headers ? {...contentTypeHeader, ...options.headers} : contentTypeHeader;
+const graphqlAction = (url, query, options = {}) => {
+  const contentTypeHeader = { "Content-Type": "application/json" };
+  const headers = options.headers
+    ? { ...contentTypeHeader, ...options.headers }
+    : contentTypeHeader;
 
   const allOptions = {
-    method: 'POST',
+    method: "POST",
     headers,
-    body: JSON.stringify({ query })
-  }
+    body: JSON.stringify({ query }),
+  };
 
   return fetch(url, allOptions);
-}
+};
 
 const buildQuery = (queryName) => `
   query ${queryName} {
@@ -48,15 +50,15 @@ const buildMutation = (queryName) => `
   }
 `;
 
-const graphqlQuery = (queryName, options) => 
+const graphqlQuery = (queryName, options) =>
   graphqlAction("https://some.url", buildQuery(queryName), options);
-const graphqlMutation = (mutationName, options) => 
+const graphqlMutation = (mutationName, options) =>
   graphqlAction("https://some.url", buildMutation(mutationName), options);
 
 test("mocks query response with thenReturn", async () => {
   when(query("TestQuery")).thenReturn(data({ response: "success" }));
 
-  const response = await graphqlQuery('TestQuery');
+  const response = await graphqlQuery("TestQuery");
 
   const json = await response.json();
 
@@ -67,7 +69,7 @@ test("mocks query response with thenReturn", async () => {
 test("mocks mutation response with thenReturn", async () => {
   when(mutation("TestMutation")).thenReturn(data({ response: "success" }));
 
-  const response = await graphqlMutation('TestMutation');
+  const response = await graphqlMutation("TestMutation");
 
   const json = await response.json();
 
@@ -78,13 +80,13 @@ test("mocks mutation response with thenReturn", async () => {
 test("mocks query response with thenReturn for multiple fetches", async () => {
   when(query("TestQuery")).thenReturn(data({ response: "success" }));
 
-  const response = await graphqlQuery('TestQuery');
+  const response = await graphqlQuery("TestQuery");
   const json = await response.json();
-  
+
   expect(response.status).toBe(200);
   expect(json.data).toStrictEqual({ response: "success" });
-  
-  const response2 = await graphqlQuery('TestQuery');
+
+  const response2 = await graphqlQuery("TestQuery");
   const json2 = await response2.json();
 
   expect(response2.status).toBe(200);
@@ -94,13 +96,13 @@ test("mocks query response with thenReturn for multiple fetches", async () => {
 test("mocks mutation response with thenReturn for multiple fetches", async () => {
   when(mutation("TestMutation")).thenReturn(data({ response: "success" }));
 
-  const response = await graphqlMutation('TestMutation');
+  const response = await graphqlMutation("TestMutation");
   const json = await response.json();
-  
+
   expect(response.status).toBe(200);
   expect(json.data).toStrictEqual({ response: "success" });
-  
-  const response2 = await graphqlMutation('TestMutation');
+
+  const response2 = await graphqlMutation("TestMutation");
   const json2 = await response2.json();
 
   expect(response2.status).toBe(200);
@@ -112,7 +114,7 @@ test("mocks query response with then", async () => {
     res(ctx.data({ response: "success" }))
   );
 
-  const response = await graphqlQuery('TestQuery');
+  const response = await graphqlQuery("TestQuery");
   const json = await response.json();
 
   expect(response.status).toBe(200);
@@ -124,7 +126,7 @@ test("mocks mutation response with then", async () => {
     res(ctx.data({ response: "success" }))
   );
 
-  const response = await graphqlMutation('TestMutation');
+  const response = await graphqlMutation("TestMutation");
   const json = await response.json();
 
   expect(response.status).toBe(200);
@@ -136,13 +138,13 @@ test("mocks query response with then for multiple fetches", async () => {
     res(ctx.data({ response: "success" }))
   );
 
-  const response = await graphqlQuery('TestQuery');
+  const response = await graphqlQuery("TestQuery");
   const json = await response.json();
 
   expect(response.status).toBe(200);
   expect(json.data).toStrictEqual({ response: "success" });
 
-  const response2 = await graphqlQuery('TestQuery');
+  const response2 = await graphqlQuery("TestQuery");
   const json2 = await response2.json();
 
   expect(response2.status).toBe(200);
@@ -154,13 +156,13 @@ test("mocks mutation response with then for multiple fetches", async () => {
     res(ctx.data({ response: "success" }))
   );
 
-  const response = await graphqlMutation('TestMutation');
+  const response = await graphqlMutation("TestMutation");
   const json = await response.json();
 
   expect(response.status).toBe(200);
   expect(json.data).toStrictEqual({ response: "success" });
 
-  const response2 = await graphqlMutation('TestMutation');
+  const response2 = await graphqlMutation("TestMutation");
   const json2 = await response2.json();
 
   expect(response2.status).toBe(200);
@@ -173,7 +175,7 @@ test("mocking query response with empty request data acts like thenReturn", asyn
     data({ response: "success" })
   );
 
-  const response = await graphqlQuery('TestQuery');
+  const response = await graphqlQuery("TestQuery");
 
   const json = await response.json();
 
@@ -187,7 +189,7 @@ test("mocking mutation response with empty request data acts like thenReturn", a
     data({ response: "success" })
   );
 
-  const response = await graphqlMutation('TestMutation');
+  const response = await graphqlMutation("TestMutation");
 
   const json = await response.json();
 
@@ -202,7 +204,7 @@ test("mocks query response including header data", async () => {
   );
 
   const headers = { "some-header": "some-header-value" };
-  const response = await graphqlQuery('TestQuery', {headers});
+  const response = await graphqlQuery("TestQuery", { headers });
 
   const json = await response.json();
 
@@ -217,7 +219,7 @@ test("mocks mutation response including header data", async () => {
   );
 
   const headers = { "some-header": "some-header-value" };
-  const response = await graphqlMutation('TestMutation', {headers});
+  const response = await graphqlMutation("TestMutation", { headers });
 
   const json = await response.json();
 
@@ -231,9 +233,8 @@ test("query response mock fails without correct queryName", async () => {
     data({ response: "success" })
   );
 
-  const testRequest = async () =>
-    await graphqlQuery('AnotherQuery');
-  
+  const testRequest = async () => await graphqlQuery("AnotherQuery");
+
   await expect(testRequest()).rejects.toThrow();
 });
 
@@ -243,9 +244,8 @@ test("mutation response mock fails without correct queryName", async () => {
     data({ response: "success" })
   );
 
-  const testRequest = async () =>
-    await graphqlMutation('AnotherMutation');
-  
+  const testRequest = async () => await graphqlMutation("AnotherMutation");
+
   await expect(testRequest()).rejects.toThrow();
 });
 
@@ -256,8 +256,9 @@ test("query response fails without correct header data", async () => {
   );
 
   const testRequest = async () =>
-   await graphqlQuery('TestQuery', 
-      {headers: { "some-header": "some other header value" }});
+    await graphqlQuery("TestQuery", {
+      headers: { "some-header": "some other header value" },
+    });
 
   await expect(testRequest()).rejects.toThrow();
 });
@@ -269,18 +270,17 @@ test("mutation response fails without correct header data", async () => {
   );
 
   const testRequest = async () =>
-   await graphqlMutation('TestMutation', 
-      {headers: { "some-header": "some other header value" }});
+    await graphqlMutation("TestMutation", {
+      headers: { "some-header": "some other header value" },
+    });
 
   await expect(testRequest()).rejects.toThrow();
 });
 
 test("mocks query response returning errors", async () => {
-  when(query("TestQuery")).thenReturn(
-    errors([{ message: "test error" }])
-  );
+  when(query("TestQuery")).thenReturn(errors([{ message: "test error" }]));
 
-  const response = await graphqlQuery('TestQuery');
+  const response = await graphqlQuery("TestQuery");
 
   const json = await response.json();
 
@@ -293,7 +293,7 @@ test("mocks mutation response returning errors", async () => {
     errors([{ message: "test error" }])
   );
 
-  const response = await graphqlMutation('TestMutation');
+  const response = await graphqlMutation("TestMutation");
 
   const json = await response.json();
 
@@ -302,11 +302,9 @@ test("mocks mutation response returning errors", async () => {
 });
 
 test("mocks query response returning errors with ", async () => {
-  when(query("TestQuery")).thenReturn(
-    errors([{ message: "test error" }])
-  );
+  when(query("TestQuery")).thenReturn(errors([{ message: "test error" }]));
 
-  const response = await graphqlQuery('TestQuery');
+  const response = await graphqlQuery("TestQuery");
 
   const json = await response.json();
 
@@ -320,7 +318,7 @@ test("mocks query response returning errors with thenReturnFor", async () => {
     errors([{ message: "test error" }])
   );
 
-  const response = await graphqlQuery('TestQuery');
+  const response = await graphqlQuery("TestQuery");
 
   const json = await response.json();
 
@@ -334,7 +332,7 @@ test("mocks mutation response returning errors with thenReturnFor", async () => 
     errors([{ message: "test error" }])
   );
 
-  const response = await graphqlMutation('TestMutation');
+  const response = await graphqlMutation("TestMutation");
 
   const json = await response.json();
 

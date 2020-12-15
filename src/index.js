@@ -20,10 +20,7 @@ const {
   options,
   mask,
 } = require("./RestMethods");
-const {
-  query,
-  mutation,
-} = require("./GraphQLActions");
+const { query, mutation } = require("./GraphQLActions");
 const {
   request,
   withBody,

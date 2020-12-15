@@ -52,6 +52,7 @@ const buildMutation = (queryName) => `
 
 const graphqlQuery = (queryName, options) =>
   graphqlAction("https://some.url", buildQuery(queryName), options);
+
 const graphqlMutation = (mutationName, options) =>
   graphqlAction("https://some.url", buildMutation(mutationName), options);
 

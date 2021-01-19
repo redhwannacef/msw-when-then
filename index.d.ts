@@ -29,11 +29,13 @@ export const options: (url: Mask) => RestMask;
 type BodyRequest = { body: any };
 type HeadersRequest = { headers: any };
 type ParamsRequest = { params: any };
-type RequestData = (BodyRequest | HeadersRequest | ParamsRequest)[];
+type SearchParamsRequest = { searchParams: any };
+type RequestData = (BodyRequest | HeadersRequest | ParamsRequest | SearchParamsRequest)[];
 type Request = {
   body?: BodyRequest;
   headers?: HeadersRequest;
   params?: ParamsRequest;
+  searchParams?: SearchParamsRequest;
 };
 
 export const request: (...requestData: RequestData) => Request;
@@ -41,6 +43,7 @@ export const request: (...requestData: RequestData) => Request;
 export const withBody: (body: any) => BodyRequest;
 export const withHeaders: (headers: any) => HeadersRequest;
 export const withParams: (params: any) => ParamsRequest;
+export const withSearchParams: (searchParams: any) => SearchParamsRequest;
 
 export type MswResolver = (req: any, res: any, ctx: any) => any;
 
